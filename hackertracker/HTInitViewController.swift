@@ -69,10 +69,7 @@ class HTInitViewController: UIViewController {
             }
         }
 
-        //self.performSegueWithIdentifier("HTHomeSegue", sender: self)
         Timer.scheduledTimer(timeInterval: TimeInterval(1), target: self, selector: #selector(HTInitViewController.go), userInfo: nil, repeats: false)
-        
-        // Do any additional setup after loading the view.
     }
     
     func loadData() {
@@ -85,10 +82,9 @@ class HTInitViewController: UIViewController {
         df.locale = Locale(identifier: "en_US_POSIX")
         
         let path = Bundle.main.path(forResource: "schedule-full", ofType: "json")
-        //NSLog("Path : \(path!)")
-        
+
         let content = try? NSString(contentsOfFile: path!, encoding: String.Encoding.ascii.rawValue)
-        //NSLog("Content: \(content)")
+
         let dataFromString = content?.data(using: String.Encoding.utf8.rawValue)
         let json = JSON(data: dataFromString!, options: JSONSerialization.ReadingOptions.mutableLeaves, error: nil)
         
@@ -128,8 +124,7 @@ class HTInitViewController: UIViewController {
             te.tool = item["tool"].boolValue
             te.exploit = item["exploit"].boolValue
             te.id = item["id"].int32Value
-            
-            //NSLog("Adding Item - id: \(te.id) type \(te.type) who: \(te.who) date: \(d)")
+
             var b = item["begin"].string!
             var e = item["end"].string!
             if ( d == "" ) {
@@ -187,23 +182,7 @@ class HTInitViewController: UIViewController {
         
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     func go() {
         self.performSegue(withIdentifier: "HTHomeSegue", sender: self)
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

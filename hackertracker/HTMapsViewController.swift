@@ -28,12 +28,6 @@ class HTMapsViewController: UIViewController, UIScrollViewDelegate {
             
             scrollview.contentSize = image.size
         }
-        //let image = UIImage(named: "map-hotel.png")!
-        /*imageView = UIImageView(image: image)
-        imageView.frame = CGRect(origin: CGPoint(x: 0, y: 0), size:image.size)
-        scrollview.addSubview(imageView)
-        
-        scrollview.contentSize = image.size*/
         
         let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(HTMapsViewController.scrollViewDoubleTapped(_:)))
         doubleTapRecognizer.numberOfTapsRequired = 2
@@ -51,11 +45,6 @@ class HTMapsViewController: UIViewController, UIScrollViewDelegate {
         
         centerScrollViewContents()
         
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     func centerScrollViewContents() {
@@ -101,18 +90,4 @@ class HTMapsViewController: UIViewController, UIScrollViewDelegate {
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
         centerScrollViewContents()
     }
-    
-    
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

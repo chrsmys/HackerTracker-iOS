@@ -85,8 +85,7 @@ class HTEventsTableViewController: UITableViewController {
 
         return cell
     }
-    
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "eventSegue") {
             let sv : HTScheduleTableViewController = segue.destination as! HTScheduleTableViewController
@@ -94,8 +93,6 @@ class HTEventsTableViewController: UITableViewController {
             let ev = self.eventTypes[indexPath.row]
             sv.eType = ev
         }
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
     }
 
 }

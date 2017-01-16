@@ -40,24 +40,12 @@ class HTEventDetailViewController: UIViewController {
         eventNameButton.setTitle(event.who, for: UIControlState())
         eventLocationLabel.text = event.location
         eventDetailTextView.text = event.details
-        
-        if (event.starred) {
-            eventStarredButton.title = starredButtonTitle
-        } else {
-            eventStarredButton.title = unstarredButtonTitle
-        }
-        
-        if (event.tool) {
-            toolImage.alpha = 1.0
-        }
-        
-        if event.demo {
-            demoImage.alpha = 1.0
-        }
-        
-        if event.exploit {
-            exploitImage.alpha = 1.0
-        }
+
+        eventStarredButton.title = event.starred ? starredButtonTitle : unstarredButtonTitle
+
+        toolImage.alpha = event.tool ? 1.0 : 0.1
+        demoImage.alpha = event.demo ? 1.0 : 0.1
+        exploitImage.alpha = event.exploit ? 1.0 : 0.1
 
         let eventLabel = DateFormatterUtility.dayOfWeekMonthTimeFormatter.string(from: event.begin as Date)
         let eventEnd = DateFormatterUtility.hourMinuteTimeFormatter.string(from: event.end as Date)
@@ -72,7 +60,6 @@ class HTEventDetailViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         eventDetailTextView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
-        
     }
     
     @IBAction func toggleMySchedule(_ sender: AnyObject) {
@@ -82,6 +69,7 @@ class HTEventDetailViewController: UIViewController {
         }
         
         let button = sender as! UIBarButtonItem
+
         if (event.starred) {
             event.starred = false
             button.title = unstarredButtonTitle

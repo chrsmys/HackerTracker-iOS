@@ -17,21 +17,18 @@ class HTSpeakersTableViewController: UITableViewController, UISearchBarDelegate 
     var filteredEvents:NSArray = []
     var selectedEvent:Event?
     var isFiltered:Bool = false
-    
-    let highlightColor = UIColor(red: 120/255.0, green: 114/255.0, blue: 255/255.0, alpha: 1)
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.register(EventCell.self, forCellReuseIdentifier: "Events")
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         let delegate : AppDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = delegate.managedObjectContext!
-        
-        //NSLog("Getting full schedule")
-        
+
         let fr:NSFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName:"Event")
         fr.predicate = NSPredicate(format: "type = 'Official' AND who != ''", argumentArray: nil)
         fr.sortDescriptors = [NSSortDescriptor(key: "begin", ascending: true)]
@@ -44,38 +41,23 @@ class HTSpeakersTableViewController: UITableViewController, UISearchBarDelegate 
         
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.tableView.contentInset.top = 22
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
     // MARK: - Table view data source
-    
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Potentially incomplete method implementation.
-        // Return the number of sections.
         return 1
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete method implementation.
-        // Return the number of rows in the section.
-        // NSLog("have \(self.events.count) events to display")
         if (isFiltered) {
             return self.filteredEvents.count
         } else {
             return self.events.count
         }
     }
-    
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell : UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "eventCell", for: indexPath) 
+
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Events", for: indexPath) as! EventCell
         
         var event : Event
         if (isFiltered) {
@@ -83,32 +65,17 @@ class HTSpeakersTableViewController: UITableViewController, UISearchBarDelegate 
         } else {
             event = self.events.object(at: indexPath.row) as! Event
         }
-        let df = DateFormatter()
-        df.dateFormat = "EE HH:mm"
-        df.timeZone = TimeZone(abbreviation: "PDT")
-        df.locale = Locale(identifier: "en_US_POSIX")
 
-        let beginDate = df.string(from: event.begin as Date)
-        df.dateFormat = "HH:mm"
-        let endDate = df.string(from: event.end as Date)
-        
-        if (event.starred) {
-            //NSLog("\(event.title) is starred!")
-            cell.textLabel!.text = "** \(event.title) **"
-            cell.textLabel!.textColor = self.highlightColor
-        } else {
-            cell.textLabel!.text = event.title
-            cell.textLabel!.textColor = UIColor.white
-        }
-        cell.detailTextLabel!.text = "\(beginDate)-\(endDate) (\(event.location)) "
-        
-        //NSLog("built cell for \(event.title)")
-        
+        cell.bind(event: event)
+
         return cell
     }
-    
+
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "searchDetailSegue", sender: indexPath)
+    }
+
     // MARK: - Search Bar Functions
-    
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         isFiltered = true;
     }
@@ -181,14 +148,17 @@ class HTSpeakersTableViewController: UITableViewController, UISearchBarDelegate 
     
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        //NSLog("Segue to speaker detail")
         if (segue.identifier == "searchDetailSegue") {
             let dv : HTEventDetailViewController = segue.destination as! HTEventDetailViewController
-            let indexPath : IndexPath = self.tableView.indexPath(for: sender as! UITableViewCell)!
+
+            guard let indexPath = sender as? IndexPath else {
+                fatalError("Failed to recieve index path during segue")
+            }
+
             if isFiltered {
-                dv.event = self.filteredEvents.object(at: indexPath.row) as! Event
+                dv.event = self.filteredEvents.object(at: indexPath.row) as? Event
             } else {
-                dv.event = self.events.object(at: indexPath.row) as! Event
+                dv.event = self.events.object(at: indexPath.row) as? Event
             }
         }
     }

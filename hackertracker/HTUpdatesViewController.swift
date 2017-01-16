@@ -70,14 +70,8 @@ class HTUpdatesViewController: UIViewController {
         
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     @IBAction func syncDatabase(_ sender: AnyObject) {
-        //NSLog("syncDatabase")
-        
+
         let alert : UIAlertController = UIAlertController(title: "Connection Request", message: "Connect to defcon-api for updates?", preferredStyle: UIAlertControllerStyle.alert)
         let yesItem : UIAlertAction = UIAlertAction(title: "Yes", style: UIAlertActionStyle.default, handler: {
             (action:UIAlertAction) in
@@ -94,7 +88,6 @@ class HTUpdatesViewController: UIViewController {
             self.present(self.syncAlert, animated: true, completion: nil)
             
             let tURL = envs.value(forKey: "URL") as! String
-            //NSLog("Connecting to \(tURL)")
             let URL = Foundation.URL(string: tURL)
             
             let request = NSMutableURLRequest(url: URL!)
@@ -115,16 +108,12 @@ class HTUpdatesViewController: UIViewController {
     }
     
     func connection(_ con: NSURLConnection!, didReceiveData _data:Data!) {
-        //NSLog("didReceiveData")
         self.data.append(_data)
     }
     
     func connectionDidFinishLoading(_ con: NSURLConnection!) {
-        //NSLog("connectionDidFinishLoading")
-        
         let resStr = NSString(data: self.data as Data, encoding: String.Encoding.ascii.rawValue)
         
-        //NSLog("response: \(resStr)")
 
         let dataFromString = resStr!.data(using: String.Encoding.utf8.rawValue)
         
@@ -176,8 +165,7 @@ class HTUpdatesViewController: UIViewController {
         let context = delegate.managedObjectContext!
         
         let json = JSON(data: data, options: JSONSerialization.ReadingOptions.mutableLeaves, error: nil)
-        //let json = JSON(data: data, options: NSJSONReadingOptions.All, error: nil)
-        
+
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd HH:mm:ss"
         df.locale = Locale(identifier: "en_US_POSIX")
@@ -274,7 +262,7 @@ class HTUpdatesViewController: UIViewController {
                 if item["description"] != "" {
                     te.details = item["description"].string!
                 }
-                //NSLog("\(te.id): \(te.title) \(item["link"])")
+
                 if ( item["link"] != nil) {
                     te.link = item["link"].string!
                 }
@@ -326,15 +314,5 @@ class HTUpdatesViewController: UIViewController {
         self.data = NSMutableData()
         
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+    
 }
